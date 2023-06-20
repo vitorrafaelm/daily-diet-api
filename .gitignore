@@ -1,0 +1,5 @@
+node_modules
+./src/database/temp
+
+.env
+.env.test
