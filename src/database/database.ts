@@ -13,18 +13,20 @@ class SetupKnexSingleton {
   private migrationsDirectory = './src/database/migrations'
   private useAsDefault: boolean = true
 
+  public objectSettings = {
+    client: this.client,
+    connection: {
+      filename: this.connectionPath,
+    },
+    useNullAsDefault: this.useAsDefault,
+    migrations: {
+      extension: this.migrationsExtesions,
+      directory: this.migrationsDirectory,
+    },
+  }
+
   private constructor() {
-    this.knex = setupKnex({
-      client: this.client,
-      connection: {
-        filename: this.connectionPath,
-      },
-      useNullAsDefault: this.useAsDefault,
-      migrations: {
-        extension: this.migrationsExtesions,
-        directory: this.migrationsDirectory,
-      },
-    })
+    this.knex = setupKnex(this.objectSettings)
   }
 
   public static getInstance(): SetupKnexSingleton {
@@ -34,6 +36,13 @@ class SetupKnexSingleton {
 
     return SetupKnexSingleton._instance
   }
+
+  public getSettings(): any {
+    return this.objectSettings
+  }
 }
 
-export const knex = SetupKnexSingleton.getInstance().knex
+const singletonInstance = SetupKnexSingleton.getInstance()
+
+export const knex = singletonInstance.knex
+export const settings = singletonInstance.getSettings()
