@@ -18,7 +18,6 @@ describe('Users routes', () => {
   })
 
   it('User can create an account', async () => {
-    // Fazer a chamada http
     const response = await request(app.server).post('/users').send({
       name: 'Vitor Rafael',
       username: 'vitor.rafael',
@@ -26,7 +25,6 @@ describe('Users routes', () => {
       password: '123456',
     })
 
-    // validação
     expect(response.statusCode).toEqual(201)
   })
 
