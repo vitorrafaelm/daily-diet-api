@@ -24,7 +24,8 @@ export function authenticationMiddleware(
 
     request.headers.user = JSON.stringify(payload.user)
     next()
-  } catch (error) {
-    return response.send(401).send('Invalid Token')
+  } catch (error: any) {
+    response.status(401)
+    throw new Error(error.message)
   }
 }

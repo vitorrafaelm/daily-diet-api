@@ -68,7 +68,11 @@ export async function usersRoutes(app: FastifyInstance) {
 
       return reply.status(200).headers({ authorization: token }).send()
     } catch (error: any) {
-      throw new Error(error.message)
+      reply.status(401)
+
+      return {
+        error: 'Could not authenticate',
+      }
     }
   })
 
@@ -96,6 +100,7 @@ export async function usersRoutes(app: FastifyInstance) {
         .count('uuid', { as: 'nodiet' })
         .first()
 
+      reply.status(200)
       return {
         total: Number(total?.total) + 1,
         diet: diet?.diet,
