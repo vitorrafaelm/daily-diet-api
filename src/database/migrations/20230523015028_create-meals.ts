@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     table.uuid('uuid').primary().notNullable()
 
     table.uuid('user_id').unsigned().notNullable()
-    table.foreign('user_id').references('userId').inTable('users')
+    table.foreign('user_id').references('uuid').inTable('users')
 
     table.text('name').notNullable()
     table.text('description').notNullable()
