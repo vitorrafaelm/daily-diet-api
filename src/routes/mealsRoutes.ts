@@ -80,7 +80,9 @@ export async function mealsRoutes(app: FastifyInstance) {
         .returning('*')
 
       return {
-        ...mealUpdated,
+        meal: {
+          ...mealUpdated[0],
+        },
       }
     },
   )

@@ -49,6 +49,114 @@ describe('Users routes', () => {
 
       expect(response.status).toBe(201)
     })
+
+    it('should be able to list all meals by user', async () => {
+      await request(app.server)
+        .post('/meals')
+        .send({
+          name: 'minha primeira refeição',
+          description: 'minha descrição',
+          mealsHour: '2023-05-22 11:55',
+          diet: true,
+        })
+        .set({ authorization: userToken })
+
+      await request(app.server)
+        .post('/meals')
+        .send({
+          name: 'minha primeira refeição 2',
+          description: 'minha descrição 2',
+          mealsHour: '2023-05-22 11:55',
+          diet: true,
+        })
+        .set({ authorization: userToken })
+
+      const response = await request(app.server)
+        .get('/meals')
+        .set({ authorization: userToken })
+
+      expect(response.body.meals).toBeDefined()
+      expect(response.body.meals.length).toBeGreaterThanOrEqual(0)
+      expect(response.status).toBe(200)
+    })
+
+    it('should be able to list a single meal by id', async () => {
+      await request(app.server)
+        .post('/meals')
+        .send({
+          name: 'minha primeira refeição 2',
+          description: 'minha descrição 2',
+          mealsHour: '2023-05-22 11:55',
+          diet: true,
+        })
+        .set({ authorization: userToken })
+
+      const allMeals = await request(app.server)
+        .get('/meals')
+        .set({ authorization: userToken })
+
+      const response = await request(app.server)
+        .get(`/meals/${allMeals.body.meals[0].uuid}`)
+        .set({ authorization: userToken })
+
+      expect(response.body.meal).toBeDefined()
+      expect(response.body.meal[0].uuid).toBeDefined()
+      expect(response.status).toBe(200)
+    })
+
+    it('should be able delete a meal by id', async () => {
+      await request(app.server)
+        .post('/meals')
+        .send({
+          name: 'minha primeira refeição 2',
+          description: 'minha descrição 2',
+          mealsHour: '2023-05-22 11:55',
+          diet: true,
+        })
+        .set({ authorization: userToken })
+
+      const allMeals = await request(app.server)
+        .get('/meals')
+        .set({ authorization: userToken })
+
+      const response = await request(app.server)
+        .delete(`/meals/${allMeals.body.meals[0].uuid}`)
+        .set({ authorization: userToken })
+
+      expect(response.status).toBe(204)
+    })
+
+    it('should be able update a meal by id', async () => {
+      await request(app.server)
+        .post('/meals')
+        .send({
+          name: 'minha primeira refeição 2',
+          description: 'minha descrição 2',
+          mealsHour: '2023-05-22 11:55',
+          diet: true,
+        })
+        .set({ authorization: userToken })
+
+      const allMeals = await request(app.server)
+        .get('/meals')
+        .set({ authorization: userToken })
+
+      const response = await request(app.server)
+        .put(`/meals/${allMeals.body.meals[0].uuid}`)
+        .send({
+          name: 'minha primeira refeição 3',
+          description: 'minha descrição 4',
+          mealsHour: '2023-05-22 11:56',
+          diet: false,
+        })
+        .set({ authorization: userToken })
+
+      console.log(response.body)
+
+      expect(response.body.meal.name).equal('minha primeira refeição 3')
+      expect(response.body.meal.description).equal('minha descrição 4')
+      expect(response.body.meal.diet).equal(0)
+    })
   })
 
   describe('User should not be able to manipulate meals if he is not authenticated', async () => {
