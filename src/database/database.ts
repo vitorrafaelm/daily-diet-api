@@ -7,7 +7,7 @@ class SetupKnexSingleton {
   private static _instance: SetupKnexSingleton | null = null
   public knex: Knex<any, unknown[]>
 
-  private client: string = 'sqlite'
+  private client: string = env.DATABASE_CLIENT
   private connectionPath: string = path.resolve('', env.DATABASE_URL)
   private migrationsExtesions = 'ts'
   private migrationsDirectory = './src/database/migrations'
@@ -15,9 +15,12 @@ class SetupKnexSingleton {
 
   public objectSettings = {
     client: this.client,
-    connection: {
-      filename: this.connectionPath,
-    },
+    connection:
+      env.DATABASE_CLIENT === 'sqlite'
+        ? {
+            filename: this.connectionPath,
+          }
+        : env.DATABASE_URL,
     useNullAsDefault: this.useAsDefault,
     migrations: {
       extension: this.migrationsExtesions,
