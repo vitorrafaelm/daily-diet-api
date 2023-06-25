@@ -8,7 +8,7 @@ class SetupKnexSingleton {
   public knex: Knex<any, unknown[]>
 
   private client: string = 'sqlite'
-  private connectionPath: string = path.resolve(__dirname, env.DATABASE_URL)
+  private connectionPath: string = path.resolve('', env.DATABASE_URL)
   private migrationsExtesions = 'ts'
   private migrationsDirectory = './src/database/migrations'
   private useAsDefault: boolean = true
